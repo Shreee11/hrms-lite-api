@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,11 +80,19 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+# Supports both Railway (MYSQLHOST) and local (.env MYSQL_HOST) env var naming
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQLDATABASE') or os.environ.get('MYSQL_DATABASE', 'hrms'),
+        'USER': os.environ.get('MYSQLUSER') or os.environ.get('MYSQL_USER', 'root'),
+        'PASSWORD': os.environ.get('MYSQLPASSWORD') or os.environ.get('MYSQL_PASSWORD', ''),
+        'HOST': os.environ.get('MYSQLHOST') or os.environ.get('MYSQL_HOST', 'localhost'),
+        'PORT': os.environ.get('MYSQLPORT') or os.environ.get('MYSQL_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 
